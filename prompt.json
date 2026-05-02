@@ -1,20 +1,19 @@
-[
-  {
-    "role": "system",
-    "content": {{ system_message | dump }}
-  },
-  {% for completion in _conversation %}
-  {
-    "role": "user",
-    "content": {{ completion.input | dump }}
-  },
-  {
-    "role": "assistant",
-    "content": {{ completion.output | dump }}
-  },
-  {% endfor %}
-  {
-    "role": "user",
-    "content": {{ message | dump }}
-  }
-]
+{
+  "systemInstruction": {{ system_message | dump }},
+  "contents": [
+    {% for completion in _conversation %}
+    {
+      "role": "user",
+      "parts": [{ "text": {{ completion.input | dump }} }]
+    },
+    {
+      "role": "model",
+      "parts": [{ "text": {{ completion.output | dump }} }]
+    },
+    {% endfor %}
+    {
+      "role": "user",
+      "parts": [{ "text": {{ message | dump }} }]
+    }
+  ]
+}
